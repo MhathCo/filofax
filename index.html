@@ -11,28 +11,39 @@
         .page { background: white; min-height: 70vh; border-radius: 0 10px 10px 10px; padding: 20px; border-left: 15px solid #eee; }
         .content { display: none; }
         .content.active { display: block; }
-        .app-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
-        .tag { font-size: 10px; background: #e67e22; color: white; padding: 2px 5px; border-radius: 5px; }
+        /* The Writable Area */
+        #note-pad { 
+            width: 100%; 
+            min-height: 300px; 
+            border: none; 
+            outline: none; 
+            background: repeating-linear-gradient(white, white 24px, #e8e8e8 25px);
+            line-height: 25px;
+            font-size: 16px;
+        }
     </style>
 </head>
-  <body>
+<body>
 <div class="binder">
     <div class="tabs">
-        <button class="tab active" onclick="showTab(event, 'main')">Main</button>
-        <button class="tab" onclick="showTab(event, 'apps')">Dev Stack</button>
+        <button class="tab active" onclick="showTab(event, 'main')">Home</button>
+        <button class="tab" onclick="showTab(event, 'notes')">Journal</button>
     </div>
     <div class="page">
         <div id="main" class="content active">
-            <h2>Filofax Dashboard</h2>
-            <p>Welcome! Tap "Dev Stack" to see your apps.</p>
+            <h2>Filofax</h2>
+            <p>Tap the <b>Journal</b> tab to start writing!</p>
         </div>
-        <div id="apps" class="content">
-            <h2>My Dev Tools</h2>
-            <div class="app-item"><b>Acode</b> <span class="tag">Editor</span><br>Writing the code I'm using now.</div>
-            <div class="app-item"><b>Termux</b> <span class="tag">Terminal</span><br>Running scripts and servers.</div>
+        <div id="notes" class="content">
+            <h2>Daily Notes</h2>
+            <div id="note-pad" contenteditable="true" oninput="saveNotes()">
+                Tap here to type...
+            </div>
+            <p style="font-size: 10px; color: gray;">(Auto-saves to this device)</p>
         </div>
     </div>
 </div>
+
 <script>
     function showTab(evt, id) {
         var i, content, tabs;
@@ -43,6 +54,19 @@
         document.getElementById(id).style.display = "block";
         evt.currentTarget.className += " active";
     }
+
+    // SAVE & LOAD LOGIC
+    function saveNotes() {
+        const text = document.getElementById('note-pad').innerHTML;
+        localStorage.setItem('filofax_notes', text);
+    }
+
+    window.onload = function() {
+        const savedText = localStorage.getItem('filofax_notes');
+        if (savedText) {
+            document.getElementById('note-pad').innerHTML = savedText;
+        }
+    };
 </script>
 </body>
 </html>
